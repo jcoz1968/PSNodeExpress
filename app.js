@@ -5,8 +5,19 @@ const app = express();
 const db = mongoose.connect('mongodb://localhost/bookAPI');
 const port = process.env.PORT || 3000;
 const bookRouter = express.Router();
+const bodyParser = require('body-parser');
 const Book = require('./models/bookModel');
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+bookRouter.route('/books')
+  .post((req, res) => {
+    const book = new Book(req.body);
+
+    console.log(book);
+    return res.json(book);
+  });
 bookRouter.route('/books')
   .get((req, res) => {
     const query = {};
