@@ -1,31 +1,13 @@
 /* eslint-disable no-param-reassign */
 const express = require('express');
+const booksController = require('../controllers/booksController');
 
 function routes(Book) {
   const bookRouter = express.Router();
+  const controller = booksController(Book);
   bookRouter.route('/books')
-    .post((req, res) => {
-      const book = new Book(req.body);
-
-      book.save();
-      return res.status(201).json(book);
-    });
-  bookRouter.route('/books')
-    .get((req, res) => {
-      const query = {};
-      if (req.query.genre) {
-        query.genre = req.query.genre;
-      }
-      const response = {
-        hello: 'This is my API'
-      };
-      Book.find(query, (err, books) => {
-        if (err) {
-          return res.send(err);
-        }
-        return res.json(books);
-      });
-    });
+    .post(controller.post)
+    .get(controller.get);
   bookRouter.use('/books/:bookId', (req, res, next) => {
     Book.findById(req.params.bookId, (err, book) => {
       if (err) {
